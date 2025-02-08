@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.maindiv {
+    background: rgb(231, 218, 218);
+    width: 800px;
+    height: 400px;
+    margin-top: 10%;
+    margin-left: 25%;
+}
+
+form {
+    background: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 10px;
+}
+
+input {
+    background: whitesmoke;
+    border: 2px solid black;
+}
