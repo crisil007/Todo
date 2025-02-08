@@ -21,7 +21,6 @@ const Home = () => {
     fetchData();
   }, []); 
 
-
   const displayForm = () => {
     setForm(true);
   };
@@ -50,7 +49,6 @@ const Home = () => {
       let response = await axios.delete(`http://localhost:3000/delettodo/${id}`);
       if (response.status === 200) {
         alert("TODO deleted successfully");
-
         setData(data.filter(item => item._id !== id));
       }
     } catch (error) {
@@ -58,23 +56,23 @@ const Home = () => {
     }
   };
 
-  
-
-  const todoComplete = async (id) => {
+  const editTodo = async (id, title, description,stage) => {
     try {
-      const body = { stage: 'completed' };
+      const body = { title, description,stage };
       let response = await axios.put(`http://localhost:3000/editodo/${id}`, body);
       if (response.status === 200) {
-        alert("TODO marked as completed");
+        alert("TODO updated successfully");
 
         setData(data.map(item =>
-          item._id === id ? { ...item, stage: 'completed' } : item
+          item._id === id ? { ...item, title, description,stage} : item
         ));
       }
     } catch (error) {
-      console.log("Error marking todo as completed sucessfully: ", error);
+      console.log("Error updating todo: ", error);
     }
   };
+
+ 
 
   return (
     <>
@@ -107,9 +105,14 @@ const Home = () => {
           <div key={item._id} className='border border-2 font-bold tracking-wide p-5'>
             <div>{item.title}</div>
             <div>{item.description}</div>
-            <div>{item.stage}</div>
+            <div>Status: {item.stage}</div>
             <div><button onClick={() => deleteTodo(item._id)}>Delete</button></div>
-            <div><button onClick={() => todoComplete(item._id)}>Mark as Completed</button></div>
+            
+            <div>
+              <button onClick={() => editTodo(item._id, prompt('New title:', item.title), prompt('New description:', item.description),prompt('New stage:',item.stage))}>
+                Edit
+              </button>
+            </div>
           </div>
         ))}
       </div>

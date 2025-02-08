@@ -58,37 +58,46 @@ exports.getTodo = async function (req, res) {
 };
 
 
-exports.editTodo = async function(req,res){
+exports.editTodo = async function(req, res) {
     try {
         let id = req.params.id;
-        let body = req.body;
+        let { title, description, stage } = req.body;
 
-        if(!body){
-            console.log("error : ", error)
+        if (!title && !description && !stage) {
             let response = error_function({
-                messgae: "There is noting to update"
-            })
-            return res.status(response.statuscode).json(response)
-        }else{
-            let edit_todo = await ToDo.updateOne({_id : id},{$set : body});
-        if(edit_todo.modifiedCount > 0){
-            let response = success_function({
-                data: edit_todo,
-                message: "Todo updated successfully"
-            })
-            return res.status(response.statuscode).json(response)
-        }
+                message: "There is nothing to update"
+            });
+            return res.status(response.statuscode).json(response);
+        } else {
+            let updateFields = {};
+            if (title) updateFields.title = title;
+            if (description) updateFields.description = description;
+            if (stage) updateFields.stage = stage;
+
+            let edit_todo = await ToDo.updateMany({ _id: id }, { $set: updateFields });
+            
+            if (edit_todo.modifiedCount > 0) {
+                let response = success_function({
+                    data: edit_todo,
+                    message: "Todo updated successfully"
+                });
+                return res.status(response.statuscode).json(response);
+            } else {
+                let response = error_function({
+                    message: "No changes were made"
+                });
+                return res.status(response.statuscode).json(response);
+            }
         }
 
     } catch (error) {
-        console.log("error : ", error)
+        console.log("error : ", error);
         let response = error_function({
-            messgae: "todos not edited"
-        })
-        return res.status(response.statuscode).json(response)
+            message: "todos not edited"
+        });
+        return res.status(response.statuscode).json(response);
     }
 }
-
 exports.deleteTodo = async function(req,res){
     try {
         let id = req.params.id;
